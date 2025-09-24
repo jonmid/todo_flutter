@@ -161,17 +161,51 @@ class HomePage extends StatelessWidget {
 
                       const SizedBox(height: 24),
 
-                      // My Tasks header
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'My Tasks',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primaryText,
+                      // My Tasks header with reload button
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'My Tasks',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primaryText,
+                            ),
                           ),
-                        ),
+                          Obx(() => GestureDetector(
+                            onTap: controller.isLoading 
+                                ? null 
+                                : () => controller.loadTasksForDate(controller.selectedDate),
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: controller.isLoading 
+                                    ? AppColors.primaryPurple.withOpacity(0.3)
+                                    : AppColors.primaryPurple.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: AppColors.primaryPurple.withOpacity(0.3),
+                                  width: 1,
+                                ),
+                              ),
+                              child: controller.isLoading
+                                  ? const SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppColors.primaryPurple,
+                                      ),
+                                    )
+                                  : const Icon(
+                                      Icons.refresh,
+                                      color: AppColors.primaryPurple,
+                                      size: 16,
+                                    ),
+                            ),
+                          )),
+                        ],
                       ),
 
                       const SizedBox(height: 16),
