@@ -2,9 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'presentation/pages/home_page.dart';
 import 'core/constants/app_colors.dart';
+import 'core/config/supabase_config.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  try {
+    // Initialize Supabase
+    await SupabaseConfig.initialize();
+    runApp(const MyApp());
+  } catch (e) {
+    // If Supabase initialization fails, show error and run app anyway
+    print('Error initializing Supabase: $e');
+    runApp(const MyApp());
+  }
 }
 
 class MyApp extends StatelessWidget {

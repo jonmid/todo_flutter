@@ -43,7 +43,6 @@ class TaskController extends GetxController {
   void onInit() {
     super.onInit();
     loadTasks();
-    _initializeSampleData();
   }
 
   // Load all tasks
@@ -59,11 +58,25 @@ class TaskController extends GetxController {
     }
   }
 
+  // Load tasks for specific date
+  Future<void> loadTasksForDate(DateTime date) async {
+    try {
+      _isLoading.value = true;
+      final tasks = await _taskRepository.getTasksByDate(date);
+      _tasks.assignAll(tasks);
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load tasks for date: $e');
+    } finally {
+      _isLoading.value = false;
+    }
+  }
+
   // Add new task
   Future<void> addTask(TaskEntity task) async {
     try {
       await _taskRepository.addTask(task);
-      _tasks.add(task);
+      // Reload tasks to get the updated list from Supabase
+      await loadTasksForDate(_selectedDate.value);
       Get.snackbar('Success', 'Task added successfully');
     } catch (e) {
       Get.snackbar('Error', 'Failed to add task: $e');
@@ -74,10 +87,8 @@ class TaskController extends GetxController {
   Future<void> updateTask(TaskEntity task) async {
     try {
       await _taskRepository.updateTask(task);
-      final index = _tasks.indexWhere((t) => t.id == task.id);
-      if (index != -1) {
-        _tasks[index] = task;
-      }
+      // Reload tasks to get the updated list from Supabase
+      await loadTasksForDate(_selectedDate.value);
     } catch (e) {
       Get.snackbar('Error', 'Failed to update task: $e');
     }
@@ -101,7 +112,8 @@ class TaskController extends GetxController {
   Future<void> deleteTask(String taskId) async {
     try {
       await _taskRepository.deleteTask(taskId);
-      _tasks.removeWhere((task) => task.id == taskId);
+      // Reload tasks to get the updated list from Supabase
+      await loadTasksForDate(_selectedDate.value);
       Get.snackbar('Success', 'Task deleted successfully');
     } catch (e) {
       Get.snackbar('Error', 'Failed to delete task: $e');
@@ -111,73 +123,8 @@ class TaskController extends GetxController {
   // Change selected date
   void changeSelectedDate(DateTime date) {
     _selectedDate.value = date;
+    loadTasksForDate(date); // Load tasks for the new selected date
   }
 
-  // Initialize sample data
-  void _initializeSampleData() {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    
-    final sampleTasks = [
-      TaskEntity(
-        id: '1',
-        title: 'Fitness',
-        description: 'Exercise and gym',
-        date: today,
-        startTime: DateTime(today.year, today.month, today.day, 6, 0),
-        endTime: DateTime(today.year, today.month, today.day, 7, 30),
-        isCompleted: true,
-      ),
-      TaskEntity(
-        id: '2',
-        title: 'Check Emails and sms',
-        description: 'Review and respond to emails and SMS',
-        date: today,
-        startTime: DateTime(today.year, today.month, today.day, 7, 30),
-        endTime: DateTime(today.year, today.month, today.day, 8, 0),
-        isCompleted: true,
-      ),
-      TaskEntity(
-        id: '3',
-        title: 'Work on Projects',
-        description: 'Focus on all the tasks related to Project',
-        date: today,
-        startTime: DateTime(today.year, today.month, today.day, 8, 0),
-        endTime: DateTime(today.year, today.month, today.day, 10, 0),
-        isCompleted: true,
-      ),
-      TaskEntity(
-        id: '4',
-        title: 'Attend Meeting',
-        description: 'Team meeting with the client ABC',
-        date: today,
-        startTime: DateTime(today.year, today.month, today.day, 10, 0),
-        endTime: DateTime(today.year, today.month, today.day, 11, 0),
-        isCompleted: false,
-      ),
-      TaskEntity(
-        id: '5',
-        title: 'Work of XYZ',
-        description: 'Change theme and ideas in XYZ',
-        date: today,
-        startTime: DateTime(today.year, today.month, today.day, 11, 0),
-        endTime: DateTime(today.year, today.month, today.day, 13, 0),
-        isCompleted: false,
-      ),
-      TaskEntity(
-        id: '6',
-        title: 'Lunch Break',
-        description: 'Enjoy a healthy lunch and take some rest',
-        date: today,
-        startTime: DateTime(today.year, today.month, today.day, 13, 0),
-        endTime: DateTime(today.year, today.month, today.day, 14, 30),
-        isCompleted: false,
-      ),
-    ];
 
-    for (final task in sampleTasks) {
-      _taskRepository.addTask(task);
-      _tasks.add(task);
-    }
-  }
 }

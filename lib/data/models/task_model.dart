@@ -17,9 +17,9 @@ class TaskModel extends TaskEntity {
       title: json['title'] as String,
       description: json['description'] as String,
       date: DateTime.parse(json['date'] as String),
-      startTime: DateTime.parse(json['startTime'] as String),
-      endTime: DateTime.parse(json['endTime'] as String),
-      isCompleted: json['isCompleted'] as bool,
+      startTime: DateTime.parse(json['start_time'] as String),
+      endTime: DateTime.parse(json['end_time'] as String),
+      isCompleted: json['is_completed'] as bool,
     );
   }
 
@@ -29,10 +29,35 @@ class TaskModel extends TaskEntity {
       'title': title,
       'description': description,
       'date': date.toIso8601String(),
-      'startTime': startTime.toIso8601String(),
-      'endTime': endTime.toIso8601String(),
-      'isCompleted': isCompleted,
+      'start_time': startTime.toIso8601String(),
+      'end_time': endTime.toIso8601String(),
+      'is_completed': isCompleted,
     };
+  }
+
+  // Método para convertir a JSON para inserción (sin id si es auto-generado)
+  Map<String, dynamic> toJsonForInsert() {
+    return {
+      'title': title,
+      'description': description,
+      'date': date.toIso8601String(),
+      'start_time': startTime.toIso8601String(),
+      'end_time': endTime.toIso8601String(),
+      'is_completed': isCompleted,
+    };
+  }
+
+  // Método para convertir a TaskEntity
+  TaskEntity toEntity() {
+    return TaskEntity(
+      id: id,
+      title: title,
+      description: description,
+      date: date,
+      startTime: startTime,
+      endTime: endTime,
+      isCompleted: isCompleted,
+    );
   }
 
   factory TaskModel.fromEntity(TaskEntity entity) {
