@@ -30,6 +30,7 @@ CREATE TABLE tasks (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL,
   description TEXT,
+  date DATE NOT NULL,
   start_time TIMESTAMP WITH TIME ZONE NOT NULL,
   end_time TIMESTAMP WITH TIME ZONE NOT NULL,
   is_completed BOOLEAN DEFAULT FALSE,
@@ -51,16 +52,17 @@ CREATE POLICY "Allow all operations on tasks" ON tasks
 
 ### Campos de la Tabla
 
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `id` | UUID | Identificador único de la tarea (clave primaria) |
-| `title` | TEXT | Título de la tarea (requerido) |
-| `description` | TEXT | Descripción detallada de la tarea (opcional) |
-| `start_time` | TIMESTAMP WITH TIME ZONE | Fecha y hora de inicio de la tarea |
-| `end_time` | TIMESTAMP WITH TIME ZONE | Fecha y hora de finalización de la tarea |
-| `is_completed` | BOOLEAN | Estado de completado de la tarea (por defecto: false) |
-| `created_at` | TIMESTAMP WITH TIME ZONE | Fecha de creación del registro |
-| `updated_at` | TIMESTAMP WITH TIME ZONE | Fecha de última actualización |
+| Campo          | Tipo                     | Descripción                                           |
+| -------------- | ------------------------ | ----------------------------------------------------- |
+| `id`           | UUID                     | Identificador único de la tarea (clave primaria)      |
+| `title`        | TEXT                     | Título de la tarea (requerido)                        |
+| `description`  | TEXT                     | Descripción detallada de la tarea (opcional)          |
+| `date`         | DATE                     | Fecha de creación de la tarea (opcional)              |
+| `start_time`   | TIMESTAMP WITH TIME ZONE | Fecha y hora de inicio de la tarea                    |
+| `end_time`     | TIMESTAMP WITH TIME ZONE | Fecha y hora de finalización de la tarea              |
+| `is_completed` | BOOLEAN                  | Estado de completado de la tarea (por defecto: false) |
+| `created_at`   | TIMESTAMP WITH TIME ZONE | Fecha de creación del registro                        |
+| `updated_at`   | TIMESTAMP WITH TIME ZONE | Fecha de última actualización                         |
 
 ## Configuración del Proyecto
 
@@ -111,17 +113,20 @@ lib/
 ## Funcionalidades Principales
 
 ### Gestión de Tareas
+
 - **Crear**: Agregar nuevas tareas con título, descripción y horarios
 - **Leer**: Visualizar tareas organizadas por fecha
 - **Actualizar**: Modificar tareas existentes y marcar como completadas
 - **Eliminar**: Remover tareas no deseadas
 
 ### Navegación por Fechas
+
 - Selector de fechas intuitivo
 - Carga automática de tareas por fecha seleccionada
 - Indicadores visuales de días con tareas
 
 ### Sincronización
+
 - Botón de recarga manual para sincronizar datos
 - Indicadores de carga durante las operaciones
 - Manejo de errores y estados de carga
