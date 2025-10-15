@@ -34,6 +34,7 @@ CREATE TABLE tasks (
   start_time TIMESTAMP WITH TIME ZONE NOT NULL,
   end_time TIMESTAMP WITH TIME ZONE NOT NULL,
   is_completed BOOLEAN DEFAULT FALSE,
+  image_url TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -61,8 +62,19 @@ CREATE POLICY "Allow all operations on tasks" ON tasks
 | `start_time`   | TIMESTAMP WITH TIME ZONE | Fecha y hora de inicio de la tarea                    |
 | `end_time`     | TIMESTAMP WITH TIME ZONE | Fecha y hora de finalización de la tarea              |
 | `is_completed` | BOOLEAN                  | Estado de completado de la tarea (por defecto: false) |
+| `image_url`    | TEXT                     | URL de la imagen asociada a la tarea (opcional)       |
 | `created_at`   | TIMESTAMP WITH TIME ZONE | Fecha de creación del registro                        |
 | `updated_at`   | TIMESTAMP WITH TIME ZONE | Fecha de última actualización                         |
+
+## Configuración de políticas para `storage`
+
+```sql
+-- Permitir subidas para usuarios autenticados:
+CREATE POLICY "Authenticated uploads to task-images" ON storage.objects FOR INSERT TO authenticated WITH CHECK ( bucket_id = 'task-images' AND owner = auth.uid() );
+
+-- Permitir lectura pública
+CREATE POLICY "Public read for task-images" ON storage.objects FOR SELECT USING ( bucket_id = 'task-images' );
+```
 
 ## Configuración del Proyecto
 

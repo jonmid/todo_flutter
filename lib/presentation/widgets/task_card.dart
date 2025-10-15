@@ -55,6 +55,44 @@ class TaskCard extends StatelessWidget {
             ),
           ),
           
+          // Image thumbnail (optional)
+          if (task.imageUrl != null && task.imageUrl!.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  task.imageUrl!,
+                  width: 56,
+                  height: 56,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: 56,
+                    height: 56,
+                    color: AppColors.cardBackground,
+                    child: const Icon(
+                      Icons.broken_image,
+                      color: AppColors.secondaryText,
+                    ),
+                  ),
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const SizedBox(
+                      width: 56,
+                      height: 56,
+                      child: Center(
+                        child: SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+
           // Task content
           Expanded(
             child: Column(

@@ -6,6 +6,7 @@ class TaskEntity {
   final DateTime startTime;
   final DateTime endTime;
   final bool isCompleted;
+  final String? imageUrl;
 
   const TaskEntity({
     required this.id,
@@ -15,6 +16,7 @@ class TaskEntity {
     required this.startTime,
     required this.endTime,
     required this.isCompleted,
+    this.imageUrl,
   });
 
   TaskEntity copyWith({
@@ -25,6 +27,7 @@ class TaskEntity {
     DateTime? startTime,
     DateTime? endTime,
     bool? isCompleted,
+    String? imageUrl,
   }) {
     return TaskEntity(
       id: id ?? this.id,
@@ -34,6 +37,7 @@ class TaskEntity {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       isCompleted: isCompleted ?? this.isCompleted,
+      imageUrl: imageUrl ?? this.imageUrl,
     );
   }
 
@@ -47,7 +51,8 @@ class TaskEntity {
         other.date == date &&
         other.startTime == startTime &&
         other.endTime == endTime &&
-        other.isCompleted == isCompleted;
+        other.isCompleted == isCompleted &&
+        other.imageUrl == imageUrl;
   }
 
   @override
@@ -58,6 +63,7 @@ class TaskEntity {
         date.hashCode ^
         startTime.hashCode ^
         endTime.hashCode ^
-        isCompleted.hashCode;
+        isCompleted.hashCode ^
+        imageUrl.hashCode;
   }
 }

@@ -9,6 +9,7 @@ class TaskModel extends TaskEntity {
     required super.startTime,
     required super.endTime,
     required super.isCompleted,
+    super.imageUrl,
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +21,7 @@ class TaskModel extends TaskEntity {
       startTime: DateTime.parse(json['start_time'] as String),
       endTime: DateTime.parse(json['end_time'] as String),
       isCompleted: json['is_completed'] as bool,
+      imageUrl: json['image_url'] as String?,
     );
   }
 
@@ -32,6 +34,7 @@ class TaskModel extends TaskEntity {
       'start_time': startTime.toIso8601String(),
       'end_time': endTime.toIso8601String(),
       'is_completed': isCompleted,
+      if (imageUrl != null) 'image_url': imageUrl,
     };
   }
 
@@ -44,6 +47,7 @@ class TaskModel extends TaskEntity {
       'start_time': startTime.toIso8601String(),
       'end_time': endTime.toIso8601String(),
       'is_completed': isCompleted,
+      if (imageUrl != null) 'image_url': imageUrl,
     };
   }
 
@@ -57,6 +61,7 @@ class TaskModel extends TaskEntity {
       startTime: startTime,
       endTime: endTime,
       isCompleted: isCompleted,
+      imageUrl: imageUrl,
     );
   }
 
@@ -69,6 +74,7 @@ class TaskModel extends TaskEntity {
       startTime: entity.startTime,
       endTime: entity.endTime,
       isCompleted: entity.isCompleted,
+      imageUrl: entity.imageUrl,
     );
   }
 
@@ -80,6 +86,7 @@ class TaskModel extends TaskEntity {
     DateTime? startTime,
     DateTime? endTime,
     bool? isCompleted,
+    String? imageUrl,
   }) {
     return TaskModel(
       id: id ?? this.id,
@@ -89,6 +96,7 @@ class TaskModel extends TaskEntity {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       isCompleted: isCompleted ?? this.isCompleted,
+      imageUrl: imageUrl ?? this.imageUrl,
     );
   }
 }
