@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'presentation/pages/home_page.dart';
+import 'presentation/pages/auth_gate.dart';
 import 'core/constants/app_colors.dart';
 import 'core/config/supabase_config.dart';
+import 'presentation/controllers/auth_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,6 +11,8 @@ void main() async {
   try {
     // Initialize Supabase
     await SupabaseConfig.initialize();
+    // Register global AuthController
+    Get.put(AuthController(), permanent: true);
     runApp(const MyApp());
   } catch (e) {
     // If Supabase initialization fails, show error and run app anyway
@@ -30,7 +33,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'SF Pro Display',
       ),
-      home: const HomePage(),
+      home: const AuthGate(),
       debugShowCheckedModeBanner: false,
     );
   }

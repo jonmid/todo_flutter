@@ -5,6 +5,7 @@ import '../controllers/task_controller.dart';
 import '../widgets/date_selector.dart';
 import '../widgets/task_card.dart';
 import 'add_task_page.dart';
+import '../controllers/auth_controller.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -12,6 +13,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(TaskController());
+    final authController = Get.find<AuthController>();
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -36,15 +38,39 @@ class HomePage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(
-                            Icons.menu,
+                          child: PopupMenuButton<String>(
+                            padding: const EdgeInsets.all(4),
+                            icon: const Icon(
+                              Icons.menu,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             color: Colors.white,
-                            size: 24,
+                            itemBuilder: (context) => [
+                              const PopupMenuItem<String>(
+                                value: 'logout',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.logout, size: 18),
+                                    SizedBox(width: 8),
+                                    Text('Cerrar sesión'),
+                                  ],
+                                ),
+                              ),
+                            ],
+                            onSelected: (value) {
+                              if (value == 'logout') {
+                                authController.signOut();
+                              }
+                            },
                           ),
                         ),
                         Obx(
