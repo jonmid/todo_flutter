@@ -38,39 +38,55 @@ class HomePage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(4),
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: PopupMenuButton<String>(
-                            padding: const EdgeInsets.all(4),
-                            icon: const Icon(
-                              Icons.menu,
-                              color: Colors.white,
-                              size: 24,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            color: Colors.white,
-                            itemBuilder: (context) => [
-                              const PopupMenuItem<String>(
-                                value: 'logout',
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.logout, size: 18),
-                                    SizedBox(width: 8),
-                                    Text('Cerrar sesión'),
-                                  ],
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_back_ios_new,
+                                  color: Colors.white,
+                                  size: 20,
                                 ),
+                                onPressed: () => Get.back(),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                              ),
+                              const SizedBox(width: 4),
+                              PopupMenuButton<String>(
+                                padding: const EdgeInsets.all(4),
+                                icon: const Icon(
+                                  Icons.menu,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                color: Colors.white,
+                                itemBuilder: (context) => const [
+                                  PopupMenuItem<String>(
+                                    value: 'logout',
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.logout, size: 18),
+                                        SizedBox(width: 8),
+                                        Text('Cerrar sesión'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                                onSelected: (value) {
+                                  if (value == 'logout') {
+                                    authController.signOut();
+                                  }
+                                },
                               ),
                             ],
-                            onSelected: (value) {
-                              if (value == 'logout') {
-                                authController.signOut();
-                              }
-                            },
                           ),
                         ),
                         Obx(
@@ -199,38 +215,46 @@ class HomePage extends StatelessWidget {
                               color: AppColors.primaryText,
                             ),
                           ),
-                          Obx(() => GestureDetector(
-                            onTap: controller.isLoading 
-                                ? null 
-                                : () => controller.loadTasksForDate(controller.selectedDate),
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: controller.isLoading 
-                                    ? AppColors.primaryPurple.withOpacity(0.3)
-                                    : AppColors.primaryPurple.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: AppColors.primaryPurple.withOpacity(0.3),
-                                  width: 1,
-                                ),
-                              ),
-                              child: controller.isLoading
-                                  ? const SizedBox(
-                                      width: 16,
-                                      height: 16,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: AppColors.primaryPurple,
-                                      ),
-                                    )
-                                  : const Icon(
-                                      Icons.refresh,
-                                      color: AppColors.primaryPurple,
-                                      size: 16,
+                          Obx(
+                            () => GestureDetector(
+                              onTap: controller.isLoading
+                                  ? null
+                                  : () => controller.loadTasksForDate(
+                                      controller.selectedDate,
                                     ),
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: controller.isLoading
+                                      ? AppColors.primaryPurple.withOpacity(0.3)
+                                      : AppColors.primaryPurple.withOpacity(
+                                          0.1,
+                                        ),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: AppColors.primaryPurple.withOpacity(
+                                      0.3,
+                                    ),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: controller.isLoading
+                                    ? const SizedBox(
+                                        width: 16,
+                                        height: 16,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: AppColors.primaryPurple,
+                                        ),
+                                      )
+                                    : const Icon(
+                                        Icons.refresh,
+                                        color: AppColors.primaryPurple,
+                                        size: 16,
+                                      ),
+                              ),
                             ),
-                          )),
+                          ),
                         ],
                       ),
 

@@ -66,6 +66,30 @@ CREATE POLICY "Allow all operations on tasks" ON tasks
 | `created_at`   | TIMESTAMP WITH TIME ZONE | Fecha de creación del registro                        |
 | `updated_at`   | TIMESTAMP WITH TIME ZONE | Fecha de última actualización                         |
 
+## Configuración tabla para `map_points`
+
+```sql
+-- Tabla de puntos de mapa
+create table if not exists public.map_points (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  latitude double precision not null,
+  longitude double precision not null,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  created_at timestamp with time zone not null default now()
+);
+
+-- Política RLS
+alter table public.map_points enable row level security;
+
+-- Permitir lectura/escritura a usuarios autenticados solo sobre sus registros
+create policy "read own points" on public.map_points
+  for select using (auth.uid() = user_id);
+
+create policy "insert own points" on public.map_points
+  for insert with check (auth.uid() = user_id);
+```
+
 ## Configuración de políticas para `storage`
 
 ```sql

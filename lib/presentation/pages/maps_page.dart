@@ -93,8 +93,16 @@ class _MapsPageState extends State<MapsPage> {
                 padding: const EdgeInsets.all(24),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text(
+                  children: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new,
+                        color: Colors.white,
+                        size: 22,
+                      ),
+                      onPressed: () => Get.back(),
+                    ),
+                    const Text(
                       'Mapas',
                       style: TextStyle(
                         color: Colors.white,
@@ -102,7 +110,11 @@ class _MapsPageState extends State<MapsPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Icon(Icons.map_outlined, color: Colors.white, size: 24),
+                    const Icon(
+                      Icons.map_outlined,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                   ],
                 ),
               ),
@@ -154,26 +166,42 @@ class _MapsPageState extends State<MapsPage> {
                           ),
                         ),
                       Expanded(
-                        child: FlutterMap(
-                          options: MapOptions(
-                            initialCenter: _initialCenter(),
-                            initialZoom: 13,
-                            onLongPress: (tapPos, latLng) {
-                              _askPointNameAndSave(
-                                context,
-                                _controller,
-                                latLng,
-                              );
-                            },
-                          ),
+                        child: Stack(
                           children: [
-                            TileLayer(
-                              urlTemplate:
-                                  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                              subdomains: ['a', 'b', 'c'],
-                              userAgentPackageName: 'com.example.todo',
+                            FlutterMap(
+                              options: MapOptions(
+                                initialCenter: _initialCenter(),
+                                initialZoom: 13,
+                                onLongPress: (tapPos, latLng) {
+                                  _askPointNameAndSave(
+                                    context,
+                                    _controller,
+                                    latLng,
+                                  );
+                                },
+                              ),
+                              children: [
+                                TileLayer(
+                                  urlTemplate:
+                                      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                  subdomains: ['a', 'b', 'c'],
+                                  userAgentPackageName: 'com.example.todo',
+                                ),
+                                MarkerLayer(markers: markers),
+                              ],
                             ),
-                            MarkerLayer(markers: markers),
+                            // Botón de información flotante
+                            Positioned(
+                              top: 16,
+                              right: 16,
+                              child: FloatingActionButton(
+                                mini: true,
+                                backgroundColor: Colors.white,
+                                foregroundColor: AppColors.primaryPurple,
+                                onPressed: () => _showInfoDialog(context),
+                                child: const Icon(Icons.info_outline),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -233,5 +261,75 @@ class _MapsPageState extends State<MapsPage> {
       );
       Get.snackbar('Punto guardado', nameController.text.trim());
     }
+  }
+
+  void _showInfoDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.info_outline, color: AppColors.primaryPurple),
+              SizedBox(width: 8),
+              Text('Cómo usar el mapa'),
+            ],
+          ),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Para agregar un punto al mapa:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(
+                    Icons.touch_app,
+                    color: AppColors.primaryPurple,
+                    size: 20,
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Mantén pulsado (long press) sobre cualquier lugar del mapa',
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(Icons.edit, color: AppColors.primaryPurple, size: 20),
+                  SizedBox(width: 8),
+                  Expanded(child: Text('Escribe un nombre para tu punto')),
+                ],
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(Icons.save, color: AppColors.primaryPurple, size: 20),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text('¡Listo! Tu punto se guardará en el mapa'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text(
+                'Entendido',
+                style: TextStyle(color: AppColors.primaryPurple),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
