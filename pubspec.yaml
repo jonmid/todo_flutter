@@ -50,6 +50,12 @@ dependencies:
   # Image picker for selecting images
   image_picker: ^1.0.7
 
+  # OpenStreetMap via flutter_map
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.0
+
+  # Device geolocation
+  geolocator: ^10.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
